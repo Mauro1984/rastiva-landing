@@ -1,0 +1,14 @@
+{
+  "version": "2026-11-02",
+  "type": "rastiva.group_invitation",
+  "status": "READY_FOR_REVIEW_IN_DISTRIBUTOR",
+  "media_type": "image/png",
+  "image_url": "https://rastiva.com.br/assets/convite-rastiva-grupos.png",
+  "image_sha256": "a8da40b9dc0441052017e6ac2e7fca891cf9194fcedcbe65e22e146cb2aeb769",
+  "caption": "💚 *CONVITE ESPECIAL RASTIVA — GRÁTIS!*\n\nAcompanhe achadinhos, ofertas e cupons selecionados da Shopee e do Mercado Livre. Você escolhe o que vale a pena aproveitar! 🛍️\n\n🌐 *Veja nosso convite animado:*\nhttps://rastiva.com.br/convite.html\n\n💬 *Entre diretamente no grupo gratuito:*\nhttps://chat.whatsapp.com/GzxwuHfGFI33E94XGVXtEB\n\n📌 A participação é gratuita e opcional. Preços e disponibilidade podem mudar.",
+  "landing_url": "https://rastiva.com.br/convite.html",
+  "group_url": "https://chat.whatsapp.com/GzxwuHfGFI33E94XGVXtEB",
+  "delivery_enabled": false,
+  "auto_send_enabled": false,
+  "notes": "Asset and captions publicly hosted; posting requires independent scheduler/publisher integration, destination authorization, dedup and canary."
+}
