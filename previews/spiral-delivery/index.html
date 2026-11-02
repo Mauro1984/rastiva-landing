@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RASTIVA — Spiral Delivery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0F0E;
+      --text: #F5F7F6;
+      --muted: #AEB9B5;
+      --muted-dark: #1F2927;
+      --green: #00E676;
+      --teal: #00C2A8;
+      --line: rgb(245 247 246 / 14%);
+      --font: 'Montserrat', system-ui, -apple-system, sans-serif;
+      font-family: var(--font);
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100svh;
+      width: 100vw;
+    }
+
+    /* Layout Full-width Container */
+    .delivery-stage {
+      --phone-top: max(380px, 42%);
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 860px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 65% 55% at 65% 58%, rgb(0 230 118 / 11%), transparent 60%),
+        radial-gradient(circle 420px at 85% 15%, rgb(0 194 168 / 6%), transparent 70%),
+        linear-gradient(180deg, #070B0A 0%, #0B0F0E 45%, #080D0B 100%);
+    }
+
+    /* Brand Top Navigation */
+    .stage-nav {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      right: 0;
+      padding: 0 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 30;
+      pointer-events: auto;
+    }
+
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-link img {
+      height: 28px;
+      width: auto;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      background: rgb(245 247 246 / 6%);
+      border: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: blink 2s infinite ease-in-out;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Backdrop Typography & Primary CTA (Fundo / Background) */
+    .backdrop-content {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 960px;
+      text-align: center;
+      padding: 0 24px;
+      z-index: 25; /* LAYER 5: copy / CTA */
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .headline {
+      font-size: clamp(42px, 4.4vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 0.98;
+      color: var(--text);
+      max-width: 940px;
+      margin: 0 auto 12px;
+      text-wrap: balance;
+    }
+
+    .headline span {
+      color: var(--green);
+      display: inline;
+    }
+
+    .subhead {
+      max-width: 58ch;
+      margin: 0 auto 18px;
+      color: var(--muted);
+      font-size: clamp(14px, 1.15vw, 15.5px);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .cta-wrapper {
+      pointer-events: auto;
+      display: inline-flex;
+      justify-content: center;
+    }
+
+    .cta-button {
+      min-height: 48px;
+      padding: 12px 26px;
+      border-radius: 12px;
+      background: var(--green);
+      color: #070D0B;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 28px rgb(0 230 118 / 24%);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, background 0.2s;
+    }
+
+    .cta-button:hover {
+      background: #19f589;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgb(0 230 118 / 34%);
+    }
+
+    .cta-button:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    .cta-button svg {
+      transition: transform 0.2s ease;
+    }
+
+    .cta-button:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* Full-width Canvas Layer */
+    .canvas-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5; /* LAYER 2: cards normais */
+      pointer-events: none;
+    }
+
+    /* Foreground Phone Mockup (Centro / Focal Point) */
+    .phone-container {
+      position: absolute;
+      left: 50%;
+      top: var(--phone-top);
+      transform: translate(-50%, -12%);
+      z-index: 15; /* LAYER 3: telefone */
+      width: 236px; /* Reduzido ~10-15% (de 250px para 236px, no range 220-245px) */
+      aspect-ratio: 0.52;
+      pointer-events: auto;
+    }
+
+    .phone-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 11px;
+      border-radius: 42px;
+      background: linear-gradient(155deg, #1d332b 0%, #06100e 100%);
+      border: 1px solid rgb(245 247 246 / 26%);
+      box-shadow:
+        0 42px 90px rgb(0 0 0 / 75%),
+        0 0 70px rgb(0 230 118 / 18%),
+        inset 0 1px 1px rgb(245 247 246 / 20%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Delivery Ripple / Bloom Wave */
+    .delivery-pulse {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .delivery-pulse.active {
+      animation: ripple-bloom 0.9s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+
+    @keyframes ripple-bloom {
+      0% {
+        box-shadow:
+          0 0 0 0 rgb(0 230 118 / 65%),
+          0 0 0 0 rgb(0 194 168 / 40%);
+        opacity: 1;
+      }
+      60% {
+        opacity: 0.8;
+      }
+      100% {
+        box-shadow:
+          0 0 0 120px rgb(0 230 118 / 0%),
+          0 0 0 180px rgb(0 194 168 / 0%);
+        opacity: 0;
+      }
+    }
+
+    .phone-screen {
+      flex: 1;
+      border-radius: 34px;
+      background: #0B0F0E;
+      border: 1px solid rgb(245 247 246 / 12%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Phone Status Bar */
+    .screen-status-bar {
+      height: 26px;
+      padding: 6px 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--muted);
+      z-index: 5;
+    }
+
+    .notch {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 64px;
+      height: 14px;
+      background: #000;
+      border-radius: 12px;
+      z-index: 6;
+    }
+
+    /* Screen WhatsApp Channel Header */
+    .channel-header {
+      padding: 8px 12px 10px;
+      background: rgb(245 247 246 / 4%);
+      border-bottom: 1px solid rgb(245 247 246 / 10%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .channel-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--green);
+      background: #0B0F0E;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .channel-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .channel-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .channel-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .verified-icon {
+      color: var(--green);
+      display: inline-flex;
+    }
+
+    .channel-sub {
+      font-size: 8px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Channel Chat Feed */
+    .channel-feed {
+      flex: 1;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 9px;
+      background:
+        radial-gradient(circle at 50% 90%, rgb(0 230 118 / 7%), transparent 60%),
+        #070B0A;
+    }
+
+    .date-pill {
+      align-self: center;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgb(245 247 246 / 8%);
+      font-size: 7px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .bubble {
+      padding: 9px 11px;
+      border-radius: 14px;
+      font-size: 9px;
+      line-height: 1.35;
+      position: relative;
+    }
+
+    .bubble-prior {
+      background: rgb(245 247 246 / 6%);
+      border: 1px solid rgb(245 247 246 / 10%);
+      color: var(--muted);
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+      max-width: 90%;
+    }
+
+    .bubble-incoming {
+      background: linear-gradient(145deg, rgb(0 230 118 / 20%), rgb(0 194 168 / 12%));
+      border: 1px solid rgb(0 230 118 / 40%);
+      color: var(--text);
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+      max-width: 95%;
+      box-shadow: 0 4px 16px rgb(0 230 118 / 14%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .bubble-incoming.pop {
+      animation: bubble-arrival 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes bubble-arrival {
+      0% { transform: scale(0.92); opacity: 0.5; }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .incoming-tag {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .incoming-product {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .incoming-thumb {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #14241F;
+      object-fit: cover;
+      border: 1px solid rgb(0 230 118 / 30%);
+      flex-shrink: 0;
+    }
+
+    .incoming-details {
+      min-width: 0;
+    }
+
+    .incoming-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .incoming-cat {
+      font-size: 7.5px;
+      color: var(--muted);
+    }
+
+    .bubble-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 3px;
+      margin-top: 4px;
+      font-size: 7px;
+      color: var(--green);
+    }
+
+    /* Floating Side Notification Toast (Desktop Annotation) */
+    .floating-toast {
+      position: absolute;
+      left: calc(50% + 142px);
+      top: calc(var(--phone-top) + 128px);
+      transform: translateY(-50%);
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgb(11 15 14 / 88%);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgb(0 230 118 / 32%);
+      box-shadow: 0 16px 36px rgb(0 0 0 / 45%), 0 0 24px rgb(0 230 118 / 12%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 15;
+      width: 220px;
+    }
+
+    .toast-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgb(0 230 118 / 15%);
+      display: grid;
+      place-items: center;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .toast-text b {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .toast-text small {
+      display: block;
+      font-size: 8px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Stage Bottom Bar */
+    .stage-footer {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .footer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      background: rgb(245 247 246 / 4%);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+    }
+
+    .footer-pill b {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1100px) {
+      .delivery-stage { --phone-top: max(385px, 44%); }
+      .floating-toast { display: none; }
+      .backdrop-content { top: 38px; }
+    }
+
+    @media (max-width: 600px) {
+      .delivery-stage { --phone-top: max(395px, 52%); }
+      .stage-nav {
+        padding: 0 20px;
+        top: 16px;
+      }
+      .brand-link img {
+        height: 24px;
+      }
+      .status-badge {
+        font-size: 9px;
+        padding: 5px 10px;
+      }
+      .backdrop-content {
+        top: 72px;
+        padding: 0 18px;
+      }
+      .headline {
+        font-size: clamp(36px, 9vw, 46px);
+        line-height: 1;
+        margin-bottom: 12px;
+      }
+      .subhead {
+        font-size: 13px;
+        margin-bottom: 18px;
+        line-height: 1.45;
+      }
+      .cta-button {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+        padding: 13px 20px;
+        font-size: 12px;
+      }
+      .phone-container {
+        width: clamp(190px, 53vw, 210px);
+        top: var(--phone-top);
+        transform: translate(-50%, -10%);
+      }
+      .phone-body {
+        border-radius: 36px;
+        padding: 8px;
+      }
+      .phone-screen {
+        border-radius: 28px;
+      }
+      .stage-footer {
+        bottom: 12px;
+      }
+      .footer-pill {
+        font-size: 9px;
+        padding: 5px 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+      .delivery-pulse {
+        display: none;
+      }
+    }
+  </style>
+<meta name="robots" content="noindex,nofollow"><meta name="description" content="Prévia visual experimental da RASTIVA, sem ofertas ou métricas comerciais verificadas."></head>
+<body>
+
+  <main class="delivery-stage" data-od-id="rastiva-spiral-delivery-demo">
+    <!-- Header Navigation -->
+    <header class="stage-nav">
+      <a class="brand-link" href="#" aria-label="RASTIVA Home">
+        <img src="Rastiva-logo.png" alt="RASTIVA">
+      </a>
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span>PRÉVIA VISUAL · NÃO PUBLICADA</span>
+      </div>
+    </header>
+
+    <!-- Typography & CTA no Fundo (Backdrop Layer) -->
+    <section class="backdrop-content" aria-label="Apresentação do Canal RASTIVA">
+      <p class="eyebrow">RASTIVA · DEMONSTRAÇÃO</p>
+      <h1 class="headline">A oportunidade <span>chega até você.</span></h1>
+      <p class="subhead">Conheça a RASTIVA e veja como as oportunidades podem chegar a você. Você não procura: a oferta encontra você.</p>
+      <div class="cta-wrapper">
+        <a class="cta-button" href="https://chat.whatsapp.com/GzxwuHfGFI33E94XGVXtEB" target="_blank" rel="noopener">
+          <span>Entrar na RASTIVA</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Canvas Full-width com cards em espiral convergindo para o centro -->
+    <canvas id="delivery" class="canvas-layer" aria-label="Cards de oportunidades convergindo para o WhatsApp"></canvas>
+
+    <!-- Telefone Mockup no Centro em Primeiro Plano -->
+    <div class="phone-container" aria-label="Mockup do Canal RASTIVA no WhatsApp">
+      <!-- Onda de impacto de entrega (ripple bloom) -->
+      <div class="delivery-pulse" id="deliveryPulse" aria-hidden="true"></div>
+
+      <div class="phone-body" style="margin-top: 0px;">
+        <div class="notch"></div>
+        <div class="phone-screen">
+          <!-- Status bar -->
+          <div class="screen-status-bar">
+            <span>09:41</span>
+            <span>●●● WiFi 100%</span>
+          </div>
+
+          <!-- Channel Header -->
+          <div class="channel-header">
+            <div class="channel-avatar">
+              <img src="Rastiva-logo-circular.png" alt="Logo RASTIVA Circular">
+            </div>
+            <div class="channel-meta">
+              <div class="channel-title">
+                <span>RASTIVA</span>
+                <span class="verified-icon">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div class="channel-sub">Exemplo ilustrativo · grupo RASTIVA</div>
+            </div>
+          </div>
+
+          <!-- Feed com mensagens do WhatsApp -->
+          <div class="channel-feed">
+            <div class="date-pill">HOJE</div>
+
+            <div class="bubble bubble-prior">
+              Exemplo de categorias encontradas na RASTIVA.
+            </div>
+
+            <div class="bubble bubble-incoming" id="incomingBubble">
+              <div class="incoming-tag">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>OPORTUNIDADE SELECIONADA</span>
+              </div>
+              <div class="incoming-product">
+                <img id="bubbleThumb" class="incoming-thumb" src="Hero-site-rastiva.png" alt="Produto entregue">
+                <div class="incoming-details">
+                  <div class="incoming-title" id="bubbleTitle">Headphone ANC Pro</div>
+                  <div class="incoming-cat" id="bubbleCat">Eletrônicos · Demonstração</div>
+                </div>
+              </div>
+              <div class="bubble-footer">
+                <span id="bubbleTime">Agora</span>
+                <span>✓✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Side Toast (Desktop) -->
+    <aside class="floating-toast" aria-hidden="true">
+      <div class="toast-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </div>
+      <div class="toast-text">
+        <b>Entrega Instantânea</b>
+        <small>Exemplo ilustrativo da entrega</small>
+      </div>
+    </aside>
+
+    <!-- Rodapé Sutil do Stage -->
+    <footer class="stage-footer">
+      <div class="footer-pill">
+        <b>DELIVERY FLOW</b> · As ofertas percorrem a tela e convergem direto para seu WhatsApp
+      </div>
+    </footer>
+  </main>
+
+  <!-- Script do Motor RastivaSpiralFlow -->
+  <script src="rastiva-spiral-flow.js?v=20260911-fullwidth"></script>
+  <script>
+    window.RastivaDeliveryScriptLoaded = typeof window.RastivaSpiralFlow === 'function';
+
+    const deliveryCanvas = document.querySelector('#delivery');
+    const deliveryPulse = document.querySelector('#deliveryPulse');
+    const incomingBubble = document.querySelector('#incomingBubble');
+    const bubbleThumb = document.querySelector('#bubbleThumb');
+    const bubbleTitle = document.querySelector('#bubbleTitle');
+    const bubbleCat = document.querySelector('#bubbleCat');
+    const bubbleTime = document.querySelector('#bubbleTime');
+
+    const products = [
+      { image: 'Hero-site-rastiva.png', title: 'Headphone ANC Pro', category: 'Eletrônicos · Demonstração' },
+      { image: 'Hero-site-rastiva.png', title: 'Air Fryer Digital 4L', category: 'Casa & Cozinha · R$ 289' },
+      { image: 'Hero-site-rastiva.png', title: 'Tênis Running Ultralight', category: 'Moda & Esporte · Relâmpago' },
+      { image: 'Hero-site-rastiva.png', title: 'Gamepad Sem Fio Pro', category: 'Games & Tech · Menor Preço' },
+      { image: 'Hero-site-rastiva.png', title: 'Parafusadeira Impacto 20V', category: 'Ferramentas · Frete Grátis' },
+      { image: 'Hero-site-rastiva.png', title: 'Smartwatch AMOLED GPS', category: 'Wearables · Demonstração' },
+      { image: 'Hero-site-rastiva.png', title: 'Console Slim 1TB', category: 'Games · Oportunidade Única' },
+      { image: 'Hero-site-rastiva.png', title: 'Monitor Gamer 165Hz', category: 'Informática · Cupom Ativo' }
+    ];
+
+    if (window.RastivaSpiralFlow) {
+      new RastivaSpiralFlow(deliveryCanvas, {
+        mode: 'delivery',
+        items: products,
+        turns: 3,
+        speed: 1.5,
+        spacing: 8.5,
+        spread: 4.8,
+        sizeAttenuation: 2,
+        imageSize: 180,
+        fadeIn: 18,
+        fadeOut: 6,
+        // Uma única âncora mantém telefone, órbita e ponto de entrega no mesmo eixo.
+        anchor: function(w, h) {
+          const isMobile = w < 600;
+          const phoneTopPx = isMobile ? Math.max(395, h * 0.52) : (w < 1100 ? Math.max(385, h * 0.44) : Math.max(380, h * 0.42));
+          const phoneCenterY = phoneTopPx / h;
+          // Ponto de entrada do WhatsApp fica levemente abaixo do topo do telefone
+          const targetY = (phoneTopPx + 70) / h;
+          return {
+            x: 0.50,
+            y: phoneCenterY,
+            targetX: 0.50,
+            targetY: Math.min(0.85, Math.max(0.35, targetY))
+          };
+        },
+        safeZone: function(w, h) {
+          // Cards permanecem no canvas atrás da interface; a copy só recebe atenuação sutil.
+          if (w < 600) return { yMax: Math.min(h * 0.31, 235), bufferY: 90 };
+          return { yMax: Math.min(h * 0.27, 240), bufferY: 110 };
+        },
+        exitStart: 0.72,
+        selectionInterval: 5500,
+        selectionDuration: 1300,
+        sparkleCount: 8,
+        selectedScale: 1.10,
+        visibleCardCap: 14,
+        mobileItemLimit: 6,
+        radius: function(w, h) {
+          // Órbita ampla em torno do telefone, limitada pela dimensão disponível do stage.
+          if (w < 600) return Math.min(w * 0.48, h * 0.42);
+          if (w < 1100) return Math.min(w * 0.45, h * 0.48);
+          return Math.min(w * 0.40, h * 0.52);
+        },
+        onDelivered: function(card, item) {
+          // Disparo da onda de impacto sonora e visual
+          if (deliveryPulse) {
+            deliveryPulse.classList.remove('active');
+            void deliveryPulse.offsetWidth;
+            deliveryPulse.classList.add('active');
+          }
+
+          // Atualização da mensagem no feed do WhatsApp com o item entregue
+          if (item) {
+            if (bubbleThumb && item.image) bubbleThumb.src = item.image;
+            if (bubbleTitle && item.title) bubbleTitle.textContent = item.title;
+            if (bubbleCat && item.category) bubbleCat.textContent = item.category;
+            if (bubbleTime) bubbleTime.textContent = 'Agora';
+
+            if (incomingBubble) {
+              incomingBubble.classList.remove('pop');
+              void incomingBubble.offsetWidth;
+              incomingBubble.classList.add('pop');
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+
+</body></html>
